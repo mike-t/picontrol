@@ -1,6 +1,4 @@
 {
     "require": {
-        "goodby/csv": "*",
-        "fabpot/goutte": "^2.0"
     }
 }
