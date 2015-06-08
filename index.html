@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>PiControl&trade;</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" href="favicon.png" type="image/png">
+    <link rel="stylesheet" href="css/bootstrap.pi-lumen.min.css">
+    <style>
+        body {
+            padding-top: 50px;
+            padding-bottom: 20px;
+        }
+    </style>
+    <!--<link rel="stylesheet" href="css/bootstrap-theme.min.css">--> 
+    <link rel="stylesheet" href="css/main.css">
+
+    <script src="js/vendor/modernizr-2.6.2-respond-1.1.0.min.js"></script>
+  </head>
+  <body>
+    <!--[if lt IE 7]>
+        <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+    <![endif]-->
+
+    <!-- heading and controls-->
+    <div class="jumbotron">
+      <div class="container">
+        <h1>PiControl&trade;</h1>
+        <p>Dashboard for managing Raspberry Pi based TV controllers.</p>
+
+        <!-- control form -->
+        <form class="form-inline" role="form" name="pi-form" id="pi-form" action="javascript:alert('apply filter here!');">
+          <p>
+            <!-- campus filter -->
+            <div class="form-group">
+              <label class="sr-only" for="filter-campus">Campus</label>
+              <select class="form-control" name="filter-campus" id="filter-campus">
+                <option value="bne">Brisbane</option>
+                <option value="gc">Gold Coast</option>
+                <option value="syd">Sydney</option>
+                <option value="mlb">Melbourne</option>
+                <option value="adl">Adelaide</option>
+                <option value="pth">Perth</option>
+              </select>
+            </div>
+          </p>
+          <!-- go button! -->
+          <p style="padding-top: 20px;">
+            <button type="submit" class="btn btn-primary btn-lg btn-danger" name="form_button" id="form_button">Filter &raquo;</button>
+          </p>
+        </form>
+      </div>
+    </div>
+
+    <div class="container">
+
+      <!-- the error container-->
+      <div class="row">
+        <div id="error">
+        </div>
+      </div>
+    
+      <!-- the Pi Controller list -->
+      <div class="row" id="controller-list-bne" >
+        <h2>Brisbane</h2>
+        <!-- BNEPI-08-01 -->
+        <div class="col-sm-6 col-md-4">          
+          <div class="thumbnail">
+            <img src="img/pi_screen.png" alt="BNE-PI-01">
+            <div class="caption">
+              <h3>BNEPI-08-01</h3>
+              <h4><!--<span class="glyphicon glyphicon-map-marker" aria-hidden="true"></span>-->Level 8 - IT Department</h4>
+
+              <!-- now playing -->
+              <h4><!--<span class="glyphicon glyphicon-film" aria-hidden="true"></span>-->Now Playing:</h4>
+              <p><span id="name"></span> (<span id="file"></span>) - <span id="details"></span></p>
+              <!--<b>bne_presentation1.jpeg</b><br />bne_presentation2.jpeg<br />bne_presentation3.jpeg-->
+              <!--<ul class="list-group">
+                <li class="list-group-item">bne_presentation1.jpeg</li>
+                <li class="list-group-item">bne_presentation2.jpeg</li>
+                <li class="list-group-item list-group-item-danger">bne_presentation3.jpeg</li>
+              </ul>
+              -->
+
+              <!-- controls -->
+              <p style="padding-top: 5px;">                
+                <button type="button" class="btn btn-warning" onclick="javascript:reboot('BNEPI-08-02');">Reboot</button>
+                <button type="button" class="btn btn-danger" onclick="javascript:notify('BNEPI-08-03');">Edit Playlist</button>
+                <button type="button" class="btn btn-success" onclick="javascript:notify('BNEPI-08-03');">Send Notification</button>
+              </p>
+            </div>
+          </div>
+        </div>
+           <!--BNEPI-08-02 -->
+        <div class="col-sm-6 col-md-4">
+          <div class="thumbnail">
+            <img src="img/pi_screen.png" alt="BNEPI-08-02">
+            <div class="caption">
+              <h3>BNEPI-08-02</h3>
+              <p>Now Playing: &lt;playlist item here&gt;</p>
+              <p>
+                <button type="button" class="btn btn-warning" onclick="javascript:reboot('BNEPI-08-02');">Reboot</button>
+                <button type="button" class="btn btn-danger" onclick="javascript:notify('BNEPI-08-03');">Edit Playlist</button>
+                <button type="button" class="btn btn-success" onclick="javascript:notify('BNEPI-08-02');">Send Notification</button>
+              </p>
+            </div>
+          </div>
+        </div>
+        <!-- BNEPI-08-03 -->
+        <div class="col-sm-6 col-md-4">
+          <div class="thumbnail">
+            <img src="img/pi_screen.png" alt="BNEPI-08-03">
+            <div class="caption">
+              <h3>BNEPI-08-03</h3>
+              <p>Now Playing: &lt;playlist item here&gt;</p>
+              <p>
+                <button type="button" class="btn btn-warning" onclick="javascript:reboot('BNEPI-08-03');">Reboot</button>
+                <button type="button" class="btn btn-danger" onclick="javascript:notify('BNEPI-08-03');">Edit Playlist</button>
+                <button type="button" class="btn btn-success" onclick="javascript:notify('BNEPI-08-03');">Send Notification</button>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer style="margin-top: 40px;">
+        <p>&copy; Michael Walton - ELG 2015</p>
+      </footer>
+
+    </div> <!-- /container -->
+
+    <!-- Bootstrap and JQuery JS -->
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.11.1.min.js"><\/script>')</script>
+    <script src="js/vendor/bootstrap.min.js"></script>
+    <!-- Socket.io client -->
+    <script src="https://cdn.socket.io/socket.io-1.3.5.js"></script>
+    <!-- Require.js -->
+    <!--<script src="http://requirejs.org/docs/release/2.1.18/minified/require.js"></script>-->
+    <!-- custom / main JS file -->
+    <script src="js/main.js"></script>
+  </body>
+</html>

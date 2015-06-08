@@ -1,0 +1,27 @@
+/* ==========================================================================
+   Custom styles
+   ========================================================================== */
+.jumbotron .container { 
+	background: url("../img/pi.png") no-repeat right bottom; 
+	/*padding:80px 420px 79px 0; width:520px;*/
+	-webkit-background-size: auto 100%;
+  	-moz-background-size: auto 100%;
+  	-o-background-size: auto 100%;
+  	background-size: auto 100%;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
