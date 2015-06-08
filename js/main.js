@@ -36,10 +36,16 @@ function showError(msg) {
 // =========================================================
 // Document Ready
 // =========================================================
-/*
+
 $(function() {
+	// every 5 seconds update the thumbnails
+	//setInterval(updateThumbnails, 5000);
 });
-*/
+
+// update the Pi TV thumbnails for what is playing live
+function updateThumbnails(path, offset) {
+	$("#thumb_BNE-PI-01").attr('src','tools/get_thumb.php?path='+path+'&offset='+offset);
+}
 /*
 // connect manually to BNEPI-08-01 using xmbc-ws library
 var kodi = require('xbmc-ws');
@@ -70,8 +76,8 @@ kodi('10.0.6.116', 9090).then(function(connection) {
 //var socket = io.connect("ws://10.0.6.116:9090/jsonrpc");
 
 // user browser's websocket implementation
-//var connection = new WebSocket('ws://10.0.6.116:9090/jsonrpc');
-var connection = new WebSocket('ws://192.168.1.10:9090/jsonrpc');
+var connection = new WebSocket('ws://10.0.6.116:9090/jsonrpc');
+//var connection = new WebSocket('ws://192.168.1.10:9090/jsonrpc');
 
 connection.onopen = function (event) {
 	send_message("Player.GetActivePlayers");
@@ -86,6 +92,8 @@ connection.onmessage = function (event) {
 
 		// response
 		switch(j.id) {
+
+			// message containing active players
 			case "Player.GetActivePlayers":
 				var r = j.result[0];
 				if (r.type == 'video') {
@@ -96,13 +104,21 @@ connection.onmessage = function (event) {
 				}
 				break;
 			
+			// message containing currently playing video details
 			case "Player.GetItem":
-				//alert(event.data);
+				// grab video details
 				var r = j.result.item;
-				document.getElementById("name").innerHTML = r.label;
-				document.getElementById("file").innerHTML = r.file;
 				var v = r.streamdetails.video[0];
+
+				console.log(r.streamdetails.video[0]);
+
+				// update the UI with the playing video details
+				document.getElementById("name").innerHTML = r.label;
+				document.getElementById("file").innerHTML = r.file;				
 				document.getElementById("details").innerHTML = v.width + 'x' + v.height + ', ' + v.duration + 's';
+
+				// update the playing video thumbnail
+				updateThumbnails(r.file, 10);
 				break;
 			
 			default:
