@@ -37,45 +37,29 @@ function showError(msg) {
 // Document Ready
 // =========================================================
 
+// NEED A BETTER WAY TO ASYNCHRONOSLY HANDLE GETTING PLAYER POSITION AND FILENAME, thus updated thumb etc.
 $(function() {
-	// every 5 seconds update the thumbnails
-	//setInterval(updateThumbnails, 5000);
+	// every 5 seconds update the playing video status and thumbnail
+	setInterval(function() {
+		// get updated player properties
+		send_message("Player.GetProperties", {
+			"playerid": 1,   // <-- could be a problem, manually set!
+			"properties": ["time", "percentage", "playlistid"]
+		});
+	}, 5000);
 });
 
-// update the Pi TV thumbnails for what is playing live
+// =========================================================
+// update the thumbnail for a controlled Pi
+// =========================================================
 function updateThumbnails(path, offset) {
 	$("#thumb_BNE-PI-01").attr('src','tools/get_thumb.php?path='+path+'&offset='+offset);
 }
-/*
-// connect manually to BNEPI-08-01 using xmbc-ws library
-var kodi = require('xbmc-ws');
-kodi('10.0.6.116', 9090).then(function(connection) {
 
-    // listen for playlist changes
-    connection.Player.OnPause(function() {
-
- 		// get playlist item
-		//{"jsonrpc": "2.0", "method": "Playlist.GetItems", "params": { "properties": [ "runtime", "showtitle", "season", "title", "artist" ], "playlistid": 1}, "id": 1}
-
-		var nowplaying = connection.Playlist.GetItems({
-		    properties: ['title', 'runtime', 'year'],
-		    playlistid: 1
-		});
-
-	    	// update output
-		console.log('Playing: ' + nowplaying);
-	});
-
-    // blah
-	connection.Application.SetMute(true);
-
-}); // end connection ?
-*/
-
-// connect manually to BNEPI-08-01 using socket.io library
-//var socket = io.connect("ws://10.0.6.116:9090/jsonrpc");
-
-// user browser's websocket implementation
+// =========================================================
+// Connect to the Pi's using the browser's websocket 
+// implementation and listen to each event for new data.
+// =========================================================
 var connection = new WebSocket('ws://10.0.6.116:9090/jsonrpc');
 //var connection = new WebSocket('ws://192.168.1.10:9090/jsonrpc');
 
@@ -86,8 +70,6 @@ connection.onopen = function (event) {
 connection.onmessage = function (event) {
 	var j = JSON.parse(event.data);
 
-	console.log(j);
-
 	if (j.id) { 
 
 		// response
@@ -97,30 +79,51 @@ connection.onmessage = function (event) {
 			case "Player.GetActivePlayers":
 				var r = j.result[0];
 				if (r.type == 'video') {
+					// get video properties
 					send_message("Player.GetItem", { 
-					"properties": ["file", "streamdetails"], 
-					"playerid": r.playerid,
+						"playerid": r.playerid,
+						"properties": ["file", "streamdetails"]
+					});
+					// get player properties
+					send_message("Player.GetProperties", {
+						"playerid": r.playerid,
+						"properties": ["time", "percentage", "playlistid"]
 					});
 				}
 				break;
-			
-			// message containing currently playing video details
+	
+			// message video properties
 			case "Player.GetItem":
 				// grab video details
 				var r = j.result.item;
 				var v = r.streamdetails.video[0];
 
-				console.log(r.streamdetails.video[0]);
+				//console.log(r);
 
 				// update the UI with the playing video details
 				document.getElementById("name").innerHTML = r.label;
-				document.getElementById("file").innerHTML = r.file;				
-				document.getElementById("details").innerHTML = v.width + 'x' + v.height + ', ' + v.duration + 's';
+				document.getElementById("details_resolution").innerHTML = v.width + 'x' + v.height 
+				document.getElementById("details_duration").innerHTML = v.duration + 's';
+				
+				// set the filename value
+				$("#path_BNE-PI-01").val(r.file);
 
-				// update the playing video thumbnail
-				updateThumbnails(r.file, 10);
+				// set the initial thumbnail
+				//updateThumbnails(r.file, 5);
+
 				break;
 			
+			// message containing player properties
+			case "Player.GetProperties":
+
+				// generate the time for current offset (hh:mm:ss)
+				var player_offset = j.result.time.hours + ':' + j.result.time.minutes + ':' + j.result.time.seconds;
+
+				// update the video thumbnail to current position
+				updateThumbnails($("#path_BNE-PI-01").val(), player_offset);
+				
+				break;
+
 			default:
 				console(event.data);
 		}
@@ -135,8 +138,8 @@ connection.onmessage = function (event) {
 	    	
 	    	case "Player.OnStop":
 	        	document.getElementById("name").innerHTML = "Player Stopped";
-	        	document.getElementById("file").innerHTML = "";
-	        	document.getElementById("details").innerHTML = "";
+				document.getElementById("details_resolution").innerHTML = "";
+				document.getElementById("details_duration").innerHTML = "";
 	        	break;
 	    	
 	    	default:

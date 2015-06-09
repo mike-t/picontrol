@@ -61,8 +61,7 @@
 
       <!-- the error container-->
       <div class="row">
-        <div id="error">
-        </div>
+        <div id="error"></div>
       </div>
     
       <!-- the Pi Controller list -->
@@ -78,7 +77,15 @@
 
               <!-- now playing -->
               <h4><!--<span class="glyphicon glyphicon-film" aria-hidden="true"></span>-->Now Playing:</h4>
-              <p><span id="name"></span> (<span id="file"></span>) - <span id="details"></span></p>
+              <p><span id="name"></span></p>
+              <p>
+                Resolution: <span id="details_resolution"></span>
+                <br />Duration: <span id="details_duration"></span>
+              </p>
+
+              <!-- playing video path -->
+              <input name="path_BNE-PI-01" id="path_BNE-PI-01" type="hidden" value="" />
+              
               <!--<b>bne_presentation1.jpeg</b><br />bne_presentation2.jpeg<br />bne_presentation3.jpeg-->
               <!--<ul class="list-group">
                 <li class="list-group-item">bne_presentation1.jpeg</li>
@@ -89,9 +96,9 @@
 
               <!-- controls -->
               <p style="padding-top: 5px;">                
-                <button type="button" class="btn btn-warning" onclick="javascript:reboot('BNEPI-08-02');">Reboot</button>
-                <button type="button" class="btn btn-danger" onclick="javascript:notify('BNEPI-08-03');">Edit Playlist</button>
-                <button type="button" class="btn btn-success" onclick="javascript:notify('BNEPI-08-03');">Send Notification</button>
+                <button type="button" class="btn btn-warning" onclick="javascript:reboot('BNEPI-08-01');">Reboot</button>
+                <button type="button" class="btn btn-danger" onclick="javascript:notify('BNEPI-08-01');">Edit Playlist</button>
+                <button type="button" class="btn btn-success" onclick="javascript:notify('BNEPI-08-01');">Send Notification</button>
               </p>
             </div>
           </div>
@@ -105,7 +112,7 @@
               <p>Now Playing: &lt;playlist item here&gt;</p>
               <p>
                 <button type="button" class="btn btn-warning" onclick="javascript:reboot('BNEPI-08-02');">Reboot</button>
-                <button type="button" class="btn btn-danger" onclick="javascript:notify('BNEPI-08-03');">Edit Playlist</button>
+                <button type="button" class="btn btn-danger" onclick="javascript:notify('BNEPI-08-02');">Edit Playlist</button>
                 <button type="button" class="btn btn-success" onclick="javascript:notify('BNEPI-08-02');">Send Notification</button>
               </p>
             </div>
