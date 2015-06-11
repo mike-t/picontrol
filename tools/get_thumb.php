@@ -9,6 +9,7 @@
 //		 file path and offset (in seconds).
 // TODO: * use 500 instead of die?
 //		 * proper replace string to suit all campuses
+//		 * if failure return the pi_thumb.png
 // ===================================================
 
 // ===================================================
