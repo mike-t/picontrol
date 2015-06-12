@@ -94,9 +94,9 @@
 
               <!-- controls -->
               <p style="padding-top: 5px;">
-                <button type="button" class="btn btn-warning" onclick="javascript:cache('BNEPI-08-01');">Skip</button>
+                <button type="button" class="btn btn-warning" onclick="javascript:refresh('BNEPI-08-01');">Refresh</button>
                 <button type="button" class="btn btn-success" onclick="javascript:notify('BNEPI-08-01');">Notify</button>
-                <button type="button" class="btn btn-danger" onclick="javascript:refresh('BNEPI-08-01');">Refresh</button>
+                <button type="button" class="btn btn-danger" onclick="javascript:skip('BNEPI-08-01');">Skip</button>
               </p>
             </div>
           </div>
@@ -141,14 +141,11 @@
 
     </div> <!-- /container -->
 
-    <!-- Bootstrap and JQuery JS -->
+    <!-- Bootstrap, JQuery JS and BootBox-->
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
     <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.11.1.min.js"><\/script>')</script>
     <script src="js/vendor/bootstrap.min.js"></script>
-    <!-- Socket.io client -->
-    <script src="https://cdn.socket.io/socket.io-1.3.5.js"></script>
-    <!-- Require.js -->
-    <!--<script src="http://requirejs.org/docs/release/2.1.18/minified/require.js"></script>-->
+    <script src="js/vendor/bootbox.min.js"></script>
     <!-- custom / main JS file -->
     <script src="js/main.js"></script>
   </body>

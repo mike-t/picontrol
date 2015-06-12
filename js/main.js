@@ -35,6 +35,42 @@ function showError(msg, level) {
 }
 
 // =========================================================
+// update the thumbnail for a controlled Pi
+// =========================================================
+function updateThumbnail(path, offset) {
+	$("#thumb_BNE-PI-01").attr('src','tools/get_thumb.php?path='+path+'&offset='+offset);
+}
+
+// =========================================================
+// refresh the Pi content (reboot method)
+// =========================================================
+function refresh() {
+	// refresh the player using the slideshow directory method
+	/*send_message("Player.Open",
+		"item":["directory":"/storage/slides/brisbane/pictures"],
+		"properties": ["shuffled":true, "repeat":"all", "playlistid"]);
+	*/
+
+	// prompt for confirmation
+	bootbox.dialog({
+		message: 'This will reboot the Pi and refresh the content. Do you wish to continue?', 
+		buttons: {
+		    success: {
+		      label: 'No!',
+		      className: 'btn-default',
+		    },
+		    danger: {
+		      label: 'Yes, reboot!',
+		      className: 'btn-danger',
+		      callback: function() {
+		        if (result) send_message("System.Reboot");
+		      }
+			}
+		}
+	});
+}
+
+// =========================================================
 // Document Ready
 // =========================================================
 
@@ -51,27 +87,67 @@ function showError(msg, level) {
 });*/
 
 // =========================================================
-// update the thumbnail for a controlled Pi
-// =========================================================
-function updateThumbnail(path, offset) {
-	$("#thumb_BNE-PI-01").attr('src','tools/get_thumb.php?path='+path+'&offset='+offset);
-}
-
-// =========================================================
-// Connect to the Pi's using the browser's websocket 
+// Attempt to connect to the Pi's using the browser's websocket 
 // implementation and listen to each event for new data.
 // =========================================================
-var connection = new WebSocket('ws://10.0.6.116:9090/jsonrpc');
-//var connection = new WebSocket('ws://192.168.1.10:9090/jsonrpc');
+var connector;
+var connection;
+var server = 'ws://10.0.6.116:9090/jsonrpc';
+var server = 'ws://10.0.6.118:9090/jsonrpc';
 
+// attempt a new connection to the pi
+connection = new WebSocket(server);
+
+// =========================================================
+// Connection Open
+// =========================================================
 connection.onopen = function (event) {
 	// check if we have any active players
 	send_message("Player.GetActivePlayers");
+
+	// stop the connector from attempting reconnect
+	clearTimeout(connector);
+
+	// clear any errors
+	showError();
 
 	// set connection status light on the UI
 	// TODO
 }
 
+// =========================================================
+// Connection Close
+// =========================================================
+connection.onclose = function (event) {
+	showError('<strong>Error!</strong> Pi connection lost.');
+
+	// set thumbnail back to placeholder, name and details clear
+	$("#thumb_BNE-PI-01").attr('src','img/pi_screen.png');
+	$("#name_BNE-PI-01").html('');
+	$("#details_BNE-PI-01").html('');
+
+	// attempt a new connection every 10 seconds
+	/* connector = setTimeout(function(){ 
+		connection = new WebSocket(server);
+	}, 10000); */
+
+	// attempt a new connection to the pi
+	connection = new WebSocket(server);
+	alert('attempting connection');
+	console.log(event);
+};
+
+// =========================================================
+// Connection Error
+// =========================================================
+connection.onerror = function (error) {
+	showError('<strong>Error!</strong> Pi connection error: ' + error);
+	//console.log('WebSocket Error: ' + error);
+};
+
+// =========================================================
+// Connection Message
+// =========================================================
 connection.onmessage = function (event) {
 	var j = JSON.parse(event.data);
 
@@ -95,7 +171,7 @@ connection.onmessage = function (event) {
 							// get video properties
 							send_message("Player.GetItem", { 
 								"playerid": j.result[0].playerid,
-								"properties": ["file", "thumbnail"]
+								"properties": ["file", "streamdetails"]
 							});
 
 							// get player properties
@@ -118,6 +194,9 @@ connection.onmessage = function (event) {
 								"playerid": j.result[0].playerid,
 								"properties": ["file"]
 							});
+
+							// get playlist
+							//send_message("Playlist.GetItems");
 							
 							break;
 
@@ -187,40 +266,34 @@ connection.onmessage = function (event) {
 			// unknown response message
 			default:
 				showError('Unknown response message recieved from HOSTNAME-HERE', 'info');
-				console(event.data);
+				console.log(j);
 		}
 
 	} else {
 
 		// notification of an action on the Pi
 		switch(j.method) {
+			// player playing
 	    	case "Player.OnPlay":
 	        	send_message("Player.GetActivePlayers");
 	        	break;
 	    	
+	    	// player stopped
 	    	case "Player.OnStop":
 	        	$("#name_BNE-PI-01").html("Player stopped.");
 				$("#details_BNE-PI-01").html("");
 	        	break;
-	    	
+			
+			// system reboot
+			case "System.OnRestart":
+				showError('Pi Rebooting...', 'warning');
+
 	    	default:
-	    		showError('Unknown action performed on HOSTNAME-HERE', 'info');
-	       		console(event.data);
+	    		//showError('Unknown action performed on HOSTNAME-HERE', 'info');
+	       		console.log(j);
 	    }
 	}
 }
-
-// Log websocket errors
-connection.onerror = function (error) {
-	showError('<strong>Error!</strong> Pi connection error: ' + error);
-	//console.log('WebSocket Error: ' + error);
-};
-
-// Connection closed
-connection.onclose = function () {
-  showError('<strong>Error!</strong> Pi connection lost.');
-  // TRY TO RECONNECT HERE AFTER 10 seconds...
-};
 
 // send_message function to format messages for Kodi
 function send_message(method, params) {
