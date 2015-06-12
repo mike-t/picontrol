@@ -53,7 +53,7 @@ function showError(msg, level) {
 // =========================================================
 // update the thumbnail for a controlled Pi
 // =========================================================
-function updateThumbnails(path, offset) {
+function updateThumbnail(path, offset) {
 	$("#thumb_BNE-PI-01").attr('src','tools/get_thumb.php?path='+path+'&offset='+offset);
 }
 
@@ -67,6 +67,9 @@ var connection = new WebSocket('ws://10.0.6.116:9090/jsonrpc');
 connection.onopen = function (event) {
 	// check if we have any active players
 	send_message("Player.GetActivePlayers");
+
+	// set connection status light on the UI
+	// TODO
 }
 
 connection.onmessage = function (event) {
@@ -113,7 +116,7 @@ connection.onmessage = function (event) {
 							// get picture properties
 							send_message("Player.GetItem", { 
 								"playerid": j.result[0].playerid,
-								"properties": ["file", "streamdetails"]
+								"properties": ["file"]
 							});
 							
 							break;
@@ -125,7 +128,7 @@ connection.onmessage = function (event) {
 					}
 				}else{
 					// No active players
-					$("#name_BNE-PI-01").html("Player Stopped.");
+					$("#name_BNE-PI-01").html("Player stopped.");
 				}
 
 				break;
@@ -158,6 +161,7 @@ connection.onmessage = function (event) {
 					// picture playing
 					case 'picture':
 						// no details at this time
+						updateThumbnail(r.file, 0);
 						break;
 				}
 				
@@ -165,7 +169,7 @@ connection.onmessage = function (event) {
 				$("#path_BNE-PI-01").val(r.file);
 
 				// set the initial thumbnail
-				//updateThumbnails(r.file, 5);
+				//updateThumbnail(r.file, 5);
 
 				break;
 			
@@ -176,7 +180,7 @@ connection.onmessage = function (event) {
 				var player_offset = j.result.time.hours + ':' + j.result.time.minutes + ':' + j.result.time.seconds;
 
 				// update the video thumbnail to current position
-				updateThumbnails($("#path_BNE-PI-01").val(), player_offset);
+				updateThumbnail($("#path_BNE-PI-01").val(), player_offset);
 				
 				break;
 
@@ -195,7 +199,7 @@ connection.onmessage = function (event) {
 	        	break;
 	    	
 	    	case "Player.OnStop":
-	        	$("#name_BNE-PI-01").html("Player Stopped.");
+	        	$("#name_BNE-PI-01").html("Player stopped.");
 				$("#details_BNE-PI-01").html("");
 	        	break;
 	    	

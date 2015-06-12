@@ -16,25 +16,27 @@
 // check required parameters have been supplied
 // ===================================================
 if (!isset($_GET['path']) || !isset($_GET['offset'])) die('No valid path or offset provided.');
+if ($_GET['path'] == '' || $_GET['offset'] == '') die('No valid path or offset provided.');
 
 // CLEAN THESE! INJECTION!
 $path = escapeshellarg($_GET['path']);
 $offset = escapeshellarg($_GET['offset']);
+
+// ===================================================
+// SET DEFAULTS
+// ===================================================
 //$path = '/home/mike/www/picontrol/tools/video-samples/Star-Wars-VII-Trailer.mp4';
 //$offset = '00:00:50';
 $size = '640x360';
 
-// tmp
-$path = str_replace('localslides', 'slides/brisbane/videos', $path);
-
-// check video path and offset supplied or 501?
+// tmp - need to figure this one out...
+$path = str_replace('localslides', 'slides', $path);
 
 // check video path exists else 404 or 501?
-
-
+// return the placeholder thumb if file is missing
 
 // ===================================================
-// Set HTTP header and return image (PNG)
+// Set HTTP header and return image (JPEG)
 // ===================================================
 header('Content-Type: image/jpeg');
 header("Pragma: no-cache");

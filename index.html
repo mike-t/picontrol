@@ -31,7 +31,7 @@
     <div class="jumbotron">
       <div class="container">
         <h1>PiControl&trade;</h1>
-        <p>Dashboard for managing Raspberry Pi based TV controllers.</p>
+        <p>Dashboard for managing Raspberry Pi OpenElec based TV controllers.</p>
 
         <!-- control form -->
         <form class="form-inline" role="form" name="pi-form" id="pi-form" action="javascript:alert('apply filter here!');">
@@ -68,16 +68,16 @@
       <div class="row" id="controller-list-bne" >
         <h2>Brisbane</h2>
         <!-- BNEPI-08-01 -->
-        <div class="col-sm-6 col-md-4">          
+        <div class="col-sm-6 col-md-4 pi-control">          
           <div class="thumbnail">
             <img id="thumb_BNE-PI-01" src="img/pi_screen.png" alt="BNE-PI-01">
             <div class="caption">
               <h3>BNEPI-08-01</h3>
-              <h4>Level 8 - IT Department</h4>
+              <h4 style="padding-bottom: 5px;">Level 8 - IT Department</h4>
 
               <!-- now playing -->
-              <h4>Now Playing:</h4>
-              <p id="name_BNE-PI-01"></p>
+              <h4>Now Playing: <span id="name_BNE-PI-01"></span></h4>
+              
               <p id="details_BNE-PI-01">
               </p>
 
@@ -93,10 +93,10 @@
               -->
 
               <!-- controls -->
-              <p style="padding-top: 5px;">                
-                <!--<button type="button" class="btn btn-warning" onclick="javascript:reboot('BNEPI-08-01');">Reboot</button>-->
-                <button disabled id="btn_notify_BNEPI-08-01" type="button" class="btn btn-success" onclick="javascript:notify('BNEPI-08-01');">Send Notification</button>
-                <button id="btn_refresh_BNEPI-08-01" type="button" class="btn btn-danger" onclick="javascript:refresh('BNEPI-08-01');">Refresh Playlist</button>
+              <p style="padding-top: 5px;">
+                <button type="button" class="btn btn-warning" onclick="javascript:cache('BNEPI-08-01');">Skip</button>
+                <button type="button" class="btn btn-success" onclick="javascript:notify('BNEPI-08-01');">Notify</button>
+                <button type="button" class="btn btn-danger" onclick="javascript:refresh('BNEPI-08-01');">Refresh</button>
               </p>
             </div>
           </div>
