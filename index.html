@@ -70,19 +70,19 @@
         <!-- BNEPI-08-01 -->
         <div class="col-sm-6 col-md-4 pi-control">          
           <div class="thumbnail">
-            <img id="thumb_BNE-PI-01" src="img/pi_screen.png" alt="BNE-PI-01">
+            <img id="thumb_BNE-PI-LG01" src="img/pi_screen.png" alt="BNE-PI-LG01">
             <div class="caption">
               <h3>BNEPI-08-01</h3>
               <h4 style="padding-bottom: 5px;">Level 8 - IT Department</h4>
 
               <!-- now playing -->
-              <h4>Now Playing: <span id="name_BNE-PI-01"></span></h4>
+              <h4>Now Playing: <span id="name_BNE-PI-LG01"></span></h4>
               
-              <p id="details_BNE-PI-01">
+              <p id="details_BNE-PI-LG01">
               </p>
 
               <!-- playing video path -->
-              <input name="path_BNE-PI-01" id="path_BNE-PI-01" type="hidden" value="" />
+              <input name="path_BNE-PI-LG01" id="path_BNE-PI-LG01" type="hidden" value="" />
 
               <!--<b>bne_presentation1.jpeg</b><br />bne_presentation2.jpeg<br />bne_presentation3.jpeg-->
               <!--<ul class="list-group">
@@ -94,9 +94,9 @@
 
               <!-- controls -->
               <p style="padding-top: 5px;">
-                <button type="button" class="btn btn-warning" onclick="javascript:refresh('BNEPI-08-01');">Reboot</button>
-                <button type="button" class="btn btn-success" onclick="javascript:notify('BNEPI-08-01');">Notify</button>
-                <button type="button" class="btn btn-danger" onclick="javascript:skip('BNEPI-08-01');">Skip</button>
+                <button disabled id="btn_refresh_BNE-PI-LG01" type="button" class="btn btn-warning" onclick="javascript:refresh('BNEPI-08-01');">Reboot</button>
+                <button disabled id="btn_notify_BNE-PI-LG01" type="button" class="btn btn-success" onclick="javascript:notify('BNEPI-08-01');">Notify</button>
+                <button disabled id="btn_skip_BNE-PI-LG01" type="button" class="btn btn-danger" onclick="javascript:skip('BNEPI-08-01');">Skip</button>
               </p>
             </div>
           </div>

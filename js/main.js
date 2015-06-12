@@ -38,7 +38,7 @@ function showError(msg, level) {
 // update the thumbnail for a controlled Pi
 // =========================================================
 function updateThumbnail(path, offset) {
-	$("#thumb_BNE-PI-01").attr('src','tools/get_thumb.php?path='+path+'&offset='+offset);
+	$("#thumb_BNE-PI-LG01").attr('src','tools/get_thumb.php?path='+path+'&offset='+offset);
 }
 
 // =========================================================
@@ -107,206 +107,242 @@ function notify() {
 // Attempt to connect to the Pi's using the browser's websocket 
 // implementation and listen to each event for new data.
 // =========================================================
-var connector;
+var attempts = 1;
 var connection;
-var server = 'ws://10.40.1.40:9090/jsonrpc';
-//var server = 'ws://10.0.6.118:9090/jsonrpc';
 
-// attempt a new connection to the pi
-connection = new WebSocket(server);
-
-// =========================================================
-// Connection Open
-// =========================================================
-connection.onopen = function (event) {
-	// check if we have any active players
-	send_message("Player.GetActivePlayers");
-
-	// stop the connector from attempting reconnect
-	clearTimeout(connector);
-
-	// clear any errors
-	showError();
-
-	// set connection status light on the UI
-	// TODO
-}
-
-// =========================================================
-// Connection Close
-// =========================================================
-connection.onclose = function (event) {
-	showError('<strong>Error!</strong> Pi connection lost. Attempting to reconnect..');
-
-	// set thumbnail back to placeholder, name and details clear
-	$("#thumb_BNE-PI-01").attr('src','img/pi_screen.png');
-	$("#name_BNE-PI-01").html('');
-	$("#details_BNE-PI-01").html('');
-
-	// attempt a new connection every 10 seconds
-	/* connector = setTimeout(function(){ 
-		connection = new WebSocket(server);
-	}, 10000); */
+// kick off first connection!
+createWebSocket();
+ 
+function createWebSocket() {
+	var server = 'ws://10.40.1.40:9090/jsonrpc';
+	//var server = 'ws://10.0.6.118:9090/jsonrpc';
 
 	// attempt a new connection to the pi
 	connection = new WebSocket(server);
-};
 
-// =========================================================
-// Connection Error
-// =========================================================
-connection.onerror = function (error) {
-	showError('<strong>Error!</strong> Pi connection error: ' + error);
-	//console.log('WebSocket Error: ' + error);
-};
+	// =========================================================
+	// Connection Open
+	// =========================================================
+	connection.onopen = function () {
+		// check if we have any active players
+		send_message("Player.GetActivePlayers");
 
-// =========================================================
-// Connection Message
-// =========================================================
-connection.onmessage = function (event) {
-	var j = JSON.parse(event.data);
+		// clear any errors
+		showError();
 
-	if (j.id) { 
+		// enable buttons
+		$("#btn_refresh_BNE-PI-LG01").removeAttr("disabled");
+		$("#btn_notify_BNE-PI-LG01").removeAttr("disabled");
+		$("#btn_skip_BNE-PI-LG01").removeAttr("disabled");
 
-		// determine which kind of message we have recieved
-		switch(j.id) {
+		// set connection status light on the UI
+		// TODO
 
-			// message containing active players
-			case 'Player.GetActivePlayers':
+		// reset connection attempts back to 1
+    	attempts = 1;
+	}
 
-				// check if we have an active player
-				if (j.result[0]) {
+	// =========================================================
+	// Connection Close
+	// =========================================================
+	connection.onclose = function (event) {
+		showError('<strong>Error!</strong> Pi connection lost. Attempting to reconnect..');
 
-					// determine which type of media is playing
-					switch(j.result[0].type) {
+		// attempt to reconnect using staggered interval
+		var time = generateInterval(attempts);
+		setTimeout(function () {
+		    // We've tried to reconnect so increment the attempts by 1
+		    attempts++;
+		    
+		    // Connection has closed so try to reconnect every 10 seconds.
+		    createWebSocket(); 
+		}, time);
 
+		// set thumbnail back to placeholder, name and details clear
+		$("#thumb_BNE-PI-LG01").attr('src','img/pi_screen.png');
+		$("#name_BNE-PI-LG01").html('');
+		$("#details_BNE-PI-LG01").html('');
+
+		// disable buttons
+		$("#btn_refresh_BNE-PI-LG01").attr("disabled", "disabled");
+		$("#btn_notify_BNE-PI-LG01").attr("disabled", "disabled");
+		$("#btn_skip_BNE-PI-LG01").attr("disabled", "disabled");
+	};
+
+	// =========================================================
+	// Connection Error
+	// =========================================================
+	connection.onerror = function (error) {
+		showError('<strong>Error!</strong> Pi connection error: ' + error);
+		//console.log('WebSocket Error: ' + error);
+	};
+
+	// =========================================================
+	// Connection Message
+	// =========================================================
+	connection.onmessage = function (event) {
+		var j = JSON.parse(event.data);
+
+		if (j.id) { 
+
+			// determine which kind of message we have recieved
+			switch(j.id) {
+
+				// message containing active players
+				case 'Player.GetActivePlayers':
+
+					// check if we have an active player
+					if (j.result[0]) {
+
+						// determine which type of media is playing
+						switch(j.result[0].type) {
+
+							// video playing
+							case 'video':
+
+								// get video properties
+								send_message("Player.GetItem", { 
+									"playerid": j.result[0].playerid,
+									"properties": ["file", "streamdetails"]
+								});
+
+								// get player properties
+								send_message("Player.GetProperties", {
+									"playerid": j.result[0].playerid,
+									"properties": ["time", "percentage", "playlistid"]
+								});
+								break;
+
+							// audio playing
+							case 'audio':
+								$("#name_BNE-PI-LG01").html("Audio content playing.");
+								break;
+
+							// pictures playing
+							case 'picture':
+
+								// get picture properties
+								send_message("Player.GetItem", { 
+									"playerid": j.result[0].playerid,
+									"properties": ["file"]
+								});
+
+								// get playlist
+								//send_message("Playlist.GetItems");
+								
+								break;
+
+							// unknown content playing
+							default:
+								contenttype = 'unknown';
+								$("#name_BNE-PI-LG01").html("Unknown media type playing.");
+						}
+					}else{
+						// No active players
+						$("#name_BNE-PI-LG01").html("Player stopped.");
+					}
+
+					break;
+		
+				// message containing item properties
+				case "Player.GetItem":
+					// grab item details
+					var r = j.result.item;
+
+					//console.log(r);
+
+					// update the UI with item label
+					$("#name_BNE-PI-LG01").html(r.label);
+
+					// update the UI with the playing item details based on content type
+					switch(r.type) {
+						
 						// video playing
 						case 'video':
-
-							// get video properties
-							send_message("Player.GetItem", { 
-								"playerid": j.result[0].playerid,
-								"properties": ["file", "streamdetails"]
-							});
-
-							// get player properties
-							send_message("Player.GetProperties", {
-								"playerid": j.result[0].playerid,
-								"properties": ["time", "percentage", "playlistid"]
-							});
+							$("#details_BNE-PI-LG01").html(
+								'Resolution: ' + r.streamdetails.video[0].width + 'x' + r.streamdetails.video[0].height + "\n\r" +
+		                		'<br />Duration: ' + r.streamdetails.video[0].duration + 's');
 							break;
 
 						// audio playing
 						case 'audio':
-							$("#name_BNE-PI-01").html("Audio content playing.");
+							// no details at this time
 							break;
 
-						// pictures playing
+						// picture playing
 						case 'picture':
-
-							// get picture properties
-							send_message("Player.GetItem", { 
-								"playerid": j.result[0].playerid,
-								"properties": ["file"]
-							});
-
-							// get playlist
-							//send_message("Playlist.GetItems");
-							
+							// no details at this time
+							updateThumbnail(r.file, 0);
 							break;
-
-						// unknown content playing
-						default:
-							contenttype = 'unknown';
-							$("#name_BNE-PI-01").html("Unknown media type playing.");
 					}
-				}else{
-					// No active players
-					$("#name_BNE-PI-01").html("Player stopped.");
-				}
-
-				break;
-	
-			// message containing item properties
-			case "Player.GetItem":
-				// grab item details
-				var r = j.result.item;
-
-				//console.log(r);
-
-				// update the UI with item label
-				$("#name_BNE-PI-01").html(r.label);
-
-				// update the UI with the playing item details based on content type
-				switch(r.type) {
 					
-					// video playing
-					case 'video':
-						$("#details_BNE-PI-01").html(
-							'Resolution: ' + r.streamdetails.video[0].width + 'x' + r.streamdetails.video[0].height + "\n\r" +
-	                		'<br />Duration: ' + r.streamdetails.video[0].duration + 's');
-						break;
+					// set the filename value
+					$("#path_BNE-PI-LG01").val(r.file);
 
-					// audio playing
-					case 'audio':
-						// no details at this time
-						break;
+					// set the initial thumbnail
+					//updateThumbnail(r.file, 5);
 
-					// picture playing
-					case 'picture':
-						// no details at this time
-						updateThumbnail(r.file, 0);
-						break;
-				}
+					break;
 				
-				// set the filename value
-				$("#path_BNE-PI-01").val(r.file);
+				// message containing player properties
+				case "Player.GetProperties":
 
-				// set the initial thumbnail
-				//updateThumbnail(r.file, 5);
+					// generate the time for current offset (hh:mm:ss)
+					var player_offset = j.result.time.hours + ':' + j.result.time.minutes + ':' + j.result.time.seconds;
 
-				break;
-			
-			// message containing player properties
-			case "Player.GetProperties":
+					// update the video thumbnail to current position
+					updateThumbnail($("#path_BNE-PI-LG01").val(), player_offset);
+					
+					break;
 
-				// generate the time for current offset (hh:mm:ss)
-				var player_offset = j.result.time.hours + ':' + j.result.time.minutes + ':' + j.result.time.seconds;
-
-				// update the video thumbnail to current position
-				updateThumbnail($("#path_BNE-PI-01").val(), player_offset);
-				
+				// message containing player GoTo result (ignore it)
+				case "Player.GoTo":				
 				break;
 
-			// unknown response message
-			default:
-				showError('Unknown response message recieved from Pi', 'info');
-				console.log(j);
+				// unknown response message
+				default:
+					showError('Unknown response message recieved from Pi', 'info');
+					console.log(j);
+			}
+
+		} else {
+
+			// notification of an action on the Pi
+			switch(j.method) {
+				// player playing
+		    	case "Player.OnPlay":
+		        	send_message("Player.GetActivePlayers");
+		        	break;
+		    	
+		    	// player stopped
+		    	case "Player.OnStop":
+		        	$("#name_BNE-PI-LG01").html("Player stopped.");
+					$("#details_BNE-PI-LG01").html("");
+		        	break;
+				
+				// system reboot
+				case "System.OnRestart":
+					showError('Pi Rebooting...', 'warning');
+
+		    	default:
+		    		//showError('Unknown action performed on HOSTNAME-HERE', 'info');
+		       		console.log(j);
+		    }
 		}
+	}
 
-	} else {
+	// =========================================================
+	// generate reconnection interval based on how many
+	// connection attempts have been made
+	// =========================================================
+	function generateInterval(k) {
+		var maxInterval = (Math.pow(2, k) - 1) * 1000;
 
-		// notification of an action on the Pi
-		switch(j.method) {
-			// player playing
-	    	case "Player.OnPlay":
-	        	send_message("Player.GetActivePlayers");
-	        	break;
-	    	
-	    	// player stopped
-	    	case "Player.OnStop":
-	        	$("#name_BNE-PI-01").html("Player stopped.");
-				$("#details_BNE-PI-01").html("");
-	        	break;
-			
-			// system reboot
-			case "System.OnRestart":
-				showError('Pi Rebooting...', 'warning');
+		// If the generated interval is more than 30 seconds, truncate it down to 30 seconds.
+		if (maxInterval > 30*1000) maxInterval = 30*1000;
 
-	    	default:
-	    		//showError('Unknown action performed on HOSTNAME-HERE', 'info');
-	       		console.log(j);
-	    }
+		// generate the interval to a random number between 0 and the maxInterval determined from above
+		return Math.random() * maxInterval;
 	}
 }
 
