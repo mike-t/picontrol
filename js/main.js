@@ -53,6 +53,7 @@ function refresh() {
 
 	// prompt for confirmation
 	bootbox.dialog({
+		title: 'Reboot Pi?', 
 		message: 'This will reboot the Pi and refresh the content. Do you wish to continue?', 
 		buttons: {
 		    success: {
@@ -63,11 +64,27 @@ function refresh() {
 		      label: 'Yes, reboot!',
 		      className: 'btn-danger',
 		      callback: function() {
-		        if (result) send_message("System.Reboot");
+		        send_message("System.Reboot");
 		      }
 			}
 		}
 	});
+}
+
+// =========================================================
+// skip to the next item
+// =========================================================
+function skip() {
+	send_message("Player.GoTo", {
+		"playerid": 2,
+		"to": "next"
+	});
+}
+
+// =========================================================
+// send a notification
+// =========================================================
+function notify() {
 }
 
 // =========================================================
@@ -92,8 +109,8 @@ function refresh() {
 // =========================================================
 var connector;
 var connection;
-var server = 'ws://10.0.6.116:9090/jsonrpc';
-var server = 'ws://10.0.6.118:9090/jsonrpc';
+var server = 'ws://10.40.1.40:9090/jsonrpc';
+//var server = 'ws://10.0.6.118:9090/jsonrpc';
 
 // attempt a new connection to the pi
 connection = new WebSocket(server);
@@ -119,7 +136,7 @@ connection.onopen = function (event) {
 // Connection Close
 // =========================================================
 connection.onclose = function (event) {
-	showError('<strong>Error!</strong> Pi connection lost.');
+	showError('<strong>Error!</strong> Pi connection lost. Attempting to reconnect..');
 
 	// set thumbnail back to placeholder, name and details clear
 	$("#thumb_BNE-PI-01").attr('src','img/pi_screen.png');
@@ -133,8 +150,6 @@ connection.onclose = function (event) {
 
 	// attempt a new connection to the pi
 	connection = new WebSocket(server);
-	alert('attempting connection');
-	console.log(event);
 };
 
 // =========================================================
@@ -265,7 +280,7 @@ connection.onmessage = function (event) {
 
 			// unknown response message
 			default:
-				showError('Unknown response message recieved from HOSTNAME-HERE', 'info');
+				showError('Unknown response message recieved from Pi', 'info');
 				console.log(j);
 		}
 
