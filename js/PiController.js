@@ -17,6 +17,8 @@ var PiController = function(hostname, location, container) {
 
 	// display the controller on the dashboard
 	this.showInterface(container);
+
+	alert(this.constructor.name);
 }
 
 PiController.prototype = {
@@ -36,7 +38,7 @@ PiController.prototype = {
 		// WebSocket onclose event
 		// =============================================
 		this.wsConnection.onclose = function (event) {
-			console.log('[' + parent.hostname + '] Listener triggered: onclose');
+			//console.log('[' + parent.hostname + '] Listener triggered: onclose');
 
 			// set connection state icon in the interface
 			parent.setStateIcon();
@@ -66,7 +68,7 @@ PiController.prototype = {
 		// WebSocket onopen event
 		// =============================================
 		this.wsConnection.onopen = function (event) {
-			console.log('[' + parent.hostname + '] Listener triggered: onopen');
+			//console.log('[' + parent.hostname + '] Listener triggered: onopen');
 
 			// check if we have any active players
 			parent.sendMessage("Player.GetActivePlayers");
@@ -87,7 +89,7 @@ PiController.prototype = {
 		// WebSocket onerror event
 		// =============================================
 		this.wsConnection.onerror = function (event) {
-			console.log('[' + parent.hostname + '] Listener triggered: onerror');
+			//console.log('[' + parent.hostname + '] Listener triggered: onerror');
 
 			// set connection state icon in the interface
 			parent.setStateIcon();
@@ -97,7 +99,7 @@ PiController.prototype = {
 		// WebSocket onmessage event
 		// =============================================
 		this.wsConnection.onmessage = function (event) {
-			console.log('[' + parent.hostname + '] Listener triggered: onmessage');
+			//console.log('[' + parent.hostname + '] Listener triggered: onmessage');
 
 			var j = JSON.parse(event.data);
 
@@ -283,6 +285,7 @@ PiController.prototype = {
 	showInterface:function(element) {
 		var dashboard = document.getElementById(element);
 
+		// add the html for the controller interface
         dashboard.innerHTML += '<div class="col-sm-6 col-md-4 pi-control" id="controller_' + this.hostname_clean + '">\n'
 							+  '  <div class="thumbnail">\n'
 							+  '    <img id="thumb_' + this.hostname_clean + '" src="img/pi_screen.png" alt="' + this.hostname + '">\n'
@@ -297,13 +300,18 @@ PiController.prototype = {
 							+  '      <input name="path_' + this.hostname_clean + '" id="path_' + this.hostname_clean + '" type="hidden" value="" />\n\n'
 							+  '      <!-- controls -->\n'
 							+  '      <p style="padding-top: 15px;">\n'
-							+  '        <button disabled id="btn_refresh_' + this.hostname_clean + '" type="button" class="btn btn-warning" onclick="javascript:refresh();">Refresh</button>\n'
-							+  '        <button disabled id="btn_notify_' + this.hostname_clean + '" type="button" class="btn btn-success" onclick="javascript:notify();">Notify</button>\n'
-							+  '        <button disabled id="btn_skip_' + this.hostname_clean + '" type="button" class="btn btn-danger" onclick="javascript:skip();">Skip</button>\n'
+							+  '        <button disabled id="btn_refresh_' + this.hostname_clean + '" type="button" class="btn btn-warning">Refresh</button>\n'
+							+  '        <button disabled id="btn_notify_' + this.hostname_clean + '" type="button" class="btn btn-success">Notify</button>\n'
+							+  '        <button disabled id="btn_skip_' + this.hostname_clean + '" type="button" class="btn btn-danger">Skip</button>\n'
 							+  '      </p>\n'
 							+  '    </div>\n'
 							+  '  </div>\n'
 							+  '</div>\n\n';
+
+		// add event listeners for interface buttons
+		document.getElementById('btn_refresh_' + this.hostname_clean).addEventListener("click", function() { this.refresh() }, false);
+		document.getElementById('btn_notify_' + this.hostname_clean).addEventListener("click", function() { this.notify() }, false);
+		document.getElementById('btn_skip_' + this.hostname_clean).addEventListener("click", function() { this.skip() }, false);
 	},
 
 	// ===================================================
@@ -395,7 +403,7 @@ PiController.prototype = {
 			      label: 'Yes, reboot!',
 			      className: 'btn-danger',
 			      callback: function() {
-			        send_message("System.Reboot");
+			        this.sendMessage("System.Reboot");
 			      }
 				}
 			}
@@ -406,7 +414,7 @@ PiController.prototype = {
 	// skip to the next item
 	// =========================================================
 	skip:function() {
-		send_message("Player.GoTo", {
+		this.sendMessage("Player.GoTo", {
 			"playerid": 2,
 			"to": "next"
 		});
@@ -416,7 +424,7 @@ PiController.prototype = {
 	// send a notification
 	// =========================================================
 	notify:function() {
-		send_message("GUI.ShowNotification", {
+		this.sendMessage("GUI.ShowNotification", {
 			"title": "title!",
 			"message": "message test!"
 		});

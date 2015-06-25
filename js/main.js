@@ -43,8 +43,8 @@ $(function() {
 	// Usage PiController(address/hostname, html element id to add controller to)
 	// !! Get these from AJAX request
 	pi1 = new PiController('10.60.34.223', 'Brisbane Level 8 IT', 'controller-dashboard');
-	pi2 = new PiController('10.60.129.147', 'Melbourne Ground Floor Bookstore', 'controller-dashboard');
-	pi3 = new PiController('10.0.6.53', 'Brisbane Ground Floor Bookstore', 'controller-dashboard');
+	pi2 = new PiController('10.60.129.147', 'Melbourne Level G Bookstore', 'controller-dashboard');
+	pi3 = new PiController('10.0.6.53', 'Brisbane Level G Bookstore', 'controller-dashboard');
 	
 	// open the connections
 	pi1.connect();
