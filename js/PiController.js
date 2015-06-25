@@ -2,14 +2,18 @@
 // PiController Object Constructor & Prototype
 // ===================================================
 // Author: Michael Walton 2015
-// Updated:	09/06/2015
+// Updated:	25/06/2015
 // Copyright: VIKING IT
 // Desc: 
 // ===================================================
-var PiController = function(hostname) {
+var PiController = function(hostname, element) {
+	// public attributes
 	this.hostname = hostname;
 	this.connectionAttempts = 1;
 	this.wsConnection;
+
+	// display the controller on the dashboard
+	this.showInterface(element);
 }
 
 PiController.prototype = {
@@ -46,7 +50,7 @@ PiController.prototype = {
 		return this.hostname;
 	},
 
-	// connection state property
+	// connection state
 	getState:function() {
 		switch(this.wsConnection.readyState) {
 			case 0:
@@ -64,6 +68,42 @@ PiController.prototype = {
 			default:
 				return 'Unknown';
 		}
+	},
+
+	// ===================================================
+	// !! functions/methods below here SHOULD become private
+	// ===================================================
+
+	// ===================================================
+	// showInterface - add the controller to the interface
+	// ===================================================
+	// Parameter: element(string) - the html element ID to 
+	// add the controller to
+	// ===================================================
+	showInterface:function(element) {
+		var dashboard = document.getElementById(element);
+
+        dashboard.innerHTML += '<div class="col-sm-6 col-md-4 pi-control" id="controller_' + this.hostname + '">\n'
+							+  '  <div class="thumbnail">\n'
+							+  '    <img id="thumb_' + this.hostname + '" src="img/pi_screen.png" alt="' + this.hostname + '">\n'
+							+  '    <div class="caption">\n'
+							+  '      <h3>' + this.hostname + '</h3>\n'
+							+  '      <h4 style="padding-bottom: 5px;">LOCATION GOES HERE!</h4>\n'
+							+  '      <!-- now playing -->\n'
+							+  '      <h4>Now Playing: <span id="name_' + this.hostname + '"></span></h4>\n'     
+							+  '      <p id="details_' + this.hostname + '">\n'
+							+  '      </p>\n\n'
+							+  '      <!-- playing video path -->\n'
+							+  '      <input name="path_' + this.hostname + '" id="path_' + this.hostname + '" type="hidden" value="" />\n\n'
+							+  '      <!-- controls -->\n'
+							+  '      <p style="padding-top: 5px;">\n'
+							+  '        <button disabled id="btn_refresh_' + this.hostname + '" type="button" class="btn btn-warning" onclick="javascript:refresh(\'' + this.hostname + '\');">Reboot</button>\n'
+							+  '        <button disabled id="btn_notify_' + this.hostname + '" type="button" class="btn btn-success" onclick="javascript:notify(\'' + this.hostname + '\');">Notify</button>\n'
+							+  '        <button disabled id="btn_skip_' + this.hostname + '" type="button" class="btn btn-danger" onclick="javascript:skip(\'' + this.hostname + '\');">Skip</button>\n'
+							+  '      </p>\n'
+							+  '    </div>\n'
+							+  '  </div>\n'
+							+  '</div>\n\n';
 	}
 }
 
@@ -329,5 +369,62 @@ function createWebSocket(connection, server) {
 		
 		connection.send(JSON.stringify(msg));
 	}
+}
+
+// =========================================================
+// update the thumbnail for a controlled Pi
+// =========================================================
+function updateThumbnail(path, offset) {
+	$("#thumb_BNE-PI-LG01").attr('src','tools/get_thumb.php?path='+path+'&offset='+offset);
+}
+
+// =========================================================
+// refresh the Pi content (reboot method)
+// =========================================================
+function refresh() {
+	// refresh the player using the slideshow directory method
+	/*send_message("Player.Open",
+		"item":["directory":"/storage/slides/brisbane/pictures"],
+		"properties": ["shuffled":true, "repeat":"all", "playlistid"]);
+	*/
+/*
+	// prompt for confirmation
+	bootbox.dialog({
+		title: 'Reboot Pi?', 
+		message: 'This will reboot the Pi and refresh the content. Do you wish to continue?', 
+		buttons: {
+		    success: {
+		      label: 'No!',
+		      className: 'btn-default',
+		    },
+		    danger: {
+		      label: 'Yes, reboot!',
+		      className: 'btn-danger',
+		      callback: function() {
+		        send_message("System.Reboot");
+		      }
+			}
+		}
+	});
+}
+
+// =========================================================
+// skip to the next item
+// =========================================================
+function skip() {
+	send_message("Player.GoTo", {
+		"playerid": 2,
+		"to": "next"
+	});
+}
+
+// =========================================================
+// send a notification
+// =========================================================
+function notify() {
+	send_message("GUI.ShowNotification", {
+		"title": "title!",
+		"message": "message test!"
+	});
 }
 */

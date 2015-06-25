@@ -64,75 +64,8 @@
         <div id="error"></div>
       </div>
     
-      <!-- the Pi Controller list -->
-      <div class="row" id="controller-list-bne" >
-        <h2>Brisbane</h2>
-        <!-- BNEPI-08-01 -->
-        <div class="col-sm-6 col-md-4 pi-control">          
-          <div class="thumbnail">
-            <img id="thumb_BNE-PI-LG01" src="img/pi_screen.png" alt="BNE-PI-LG01">
-            <div class="caption">
-              <h3>BNEPI-08-01</h3>
-              <h4 style="padding-bottom: 5px;">Level 8 - IT Department</h4>
-
-              <!-- now playing -->
-              <h4>Now Playing: <span id="name_BNE-PI-LG01"></span></h4>
-              
-              <p id="details_BNE-PI-LG01">
-              </p>
-
-              <!-- playing video path -->
-              <input name="path_BNE-PI-LG01" id="path_BNE-PI-LG01" type="hidden" value="" />
-
-              <!--<b>bne_presentation1.jpeg</b><br />bne_presentation2.jpeg<br />bne_presentation3.jpeg-->
-              <!--<ul class="list-group">
-                <li class="list-group-item">bne_presentation1.jpeg</li>
-                <li class="list-group-item">bne_presentation2.jpeg</li>
-                <li class="list-group-item list-group-item-danger">bne_presentation3.jpeg</li>
-              </ul>
-              -->
-
-              <!-- controls -->
-              <p style="padding-top: 5px;">
-                <button disabled id="btn_refresh_BNE-PI-LG01" type="button" class="btn btn-warning" onclick="javascript:refresh('BNEPI-08-01');">Reboot</button>
-                <button disabled id="btn_notify_BNE-PI-LG01" type="button" class="btn btn-success" onclick="javascript:notify('BNEPI-08-01');">Notify</button>
-                <button disabled id="btn_skip_BNE-PI-LG01" type="button" class="btn btn-danger" onclick="javascript:skip('BNEPI-08-01');">Skip</button>
-              </p>
-            </div>
-          </div>
-        </div>
-
-        <!--BNEPI-08-02 -->
-<!--         <div class="col-sm-6 col-md-4">
-          <div class="thumbnail">
-            <img src="img/pi_screen.png" alt="BNEPI-08-02">
-            <div class="caption">
-              <h3>BNEPI-08-02</h3>
-              <p>Now Playing: &lt;playlist item here&gt;</p>
-              <p>
-                <button type="button" class="btn btn-warning" onclick="javascript:reboot('BNEPI-08-02');">Reboot</button>
-                <button type="button" class="btn btn-danger" onclick="javascript:notify('BNEPI-08-02');">Edit Playlist</button>
-                <button type="button" class="btn btn-success" onclick="javascript:notify('BNEPI-08-02');">Send Notification</button>
-              </p>
-            </div>
-          </div>
-        </div> -->
-
-        <!-- BNEPI-08-03 -->
-<!--         <div class="col-sm-6 col-md-4">
-          <div class="thumbnail">
-            <img src="img/pi_screen.png" alt="BNEPI-08-03">
-            <div class="caption">
-              <h3>BNEPI-08-03</h3>
-              <p>Now Playing: &lt;playlist item here&gt;</p>
-              <p>
-                <button type="button" class="btn btn-warning" onclick="javascript:reboot('BNEPI-08-03');">Reboot</button>
-                <button type="button" class="btn btn-danger" onclick="javascript:notify('BNEPI-08-03');">Edit Playlist</button>
-                <button type="button" class="btn btn-success" onclick="javascript:notify('BNEPI-08-03');">Send Notification</button>
-              </p>
-            </div>
-          </div>
-        </div>-->
+      <!-- the Pi Controller dashboard -->
+      <div class="row" id="controller-dashboard" >
       </div>
 
       <footer style="margin-top: 40px;">
@@ -146,7 +79,8 @@
     <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.11.1.min.js"><\/script>')</script>
     <script src="js/vendor/bootstrap.min.js"></script>
     <script src="js/vendor/bootbox.min.js"></script>
-    <!-- custom / main JS file -->
+    <!-- PiController class and main JS file -->
+    <script src="js/PiController.js"></script>
     <script src="js/main.js"></script>
   </body>
 </html>
