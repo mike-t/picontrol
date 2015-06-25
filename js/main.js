@@ -41,18 +41,13 @@ function showError(msg, level) {
 // =========================================================
 $(function() {
 	// Usage PiController(address/hostname, html element id to add controller to)
-	pi1 = new PiController('10.60.34.223', 'controller-dashboard');
-	pi2 = new PiController('10.60.129.147', 'controller-dashboard');
-	pi3 = new PiController('BNEPI-LG-01', 'controller-dashboard');
+	// !! Get these from AJAX request
+	pi1 = new PiController('10.60.34.223', 'Brisbane Level 8 IT', 'controller-dashboard');
+	pi2 = new PiController('10.60.129.147', 'Melbourne Ground Floor Bookstore', 'controller-dashboard');
+	pi3 = new PiController('10.0.6.53', 'Brisbane Ground Floor Bookstore', 'controller-dashboard');
 	
 	// open the connections
 	pi1.connect();
 	pi2.connect();
 	pi3.connect();
-
-	// update the connection status on the device
-	/*setInterval(function() {
-		console.log('State (' + test.hostname() + '): ' + test.getState());
-	}, 3000);
-	*/
 });
