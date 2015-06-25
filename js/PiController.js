@@ -17,8 +17,6 @@ var PiController = function(hostname, location, container) {
 
 	// display the controller on the dashboard
 	this.showInterface(container);
-
-	alert(this.constructor.name);
 }
 
 PiController.prototype = {
