@@ -26,39 +26,39 @@ PiController.prototype = {
 	// open the WebSocket connection for this PiController
 	// =============================================
 	connect:function() {
-		var parent = this;
+		var self = this;
 		this.wsConnection = new WebSocket('ws://' + this.hostname + ':9090/jsonrpc');
 
 		// set connection state icon in the interface
-		parent.setStateIcon();
+		self.setStateIcon();
 
 		// =============================================
 		// WebSocket onclose event
 		// =============================================
 		this.wsConnection.onclose = function (event) {
-			//console.log('[' + parent.hostname + '] Listener triggered: onclose');
+			//console.log('[' + self.hostname + '] Listener triggered: onclose');
 
 			// set connection state icon in the interface
-			parent.setStateIcon();
+			self.setStateIcon();
 
 			// set thumbnail back to placeholder, name and details clear
-			$('#thumb_' + parent.hostname_clean).attr('src','img/pi_screen.png');
-			$('#name_' + parent.hostname_clean).html('');
-			$('#details_' + parent.hostname_clean).html('');
+			$('#thumb_' + self.hostname_clean).attr('src','img/pi_screen.png');
+			$('#name_' + self.hostname_clean).html('');
+			$('#details_' + self.hostname_clean).html('');
 
 			// disable buttons
-			$('#btn_refresh_' + parent.hostname_clean).attr("disabled", "disabled");
-			$('#btn_notify_' + parent.hostname_clean).attr("disabled", "disabled");
-			$('#btn_skip_' + parent.hostname_clean).attr("disabled", "disabled");
+			$('#btn_refresh_' + self.hostname_clean).attr("disabled", "disabled");
+			$('#btn_notify_' + self.hostname_clean).attr("disabled", "disabled");
+			$('#btn_skip_' + self.hostname_clean).attr("disabled", "disabled");
 
 			// attempt to reconnect using interval with generated back off
-			var time = parent.generateConnectionInterval(parent.connectionAttempts);
+			var time = self.generateConnectionInterval(self.connectionAttempts);
 			setTimeout(function () {
 			    // We've tried to reconnect so increment the attempts by 1
-			    parent.connectionAttempts++;
+			    self.connectionAttempts++;
 			    
 			    // attempt the reconnection overriding existing connection
-			    parent.connect();
+			    self.connect();
 			}, time);
 		}
 
@@ -66,38 +66,38 @@ PiController.prototype = {
 		// WebSocket onopen event
 		// =============================================
 		this.wsConnection.onopen = function (event) {
-			//console.log('[' + parent.hostname + '] Listener triggered: onopen');
+			//console.log('[' + self.hostname + '] Listener triggered: onopen');
 
 			// check if we have any active players
-			parent.sendMessage("Player.GetActivePlayers");
+			self.sendMessage("Player.GetActivePlayers");
 
 			// enable interface buttons
-			$('#btn_refresh_' + parent.hostname_clean).removeAttr("disabled");
-			$('#btn_notify_' + parent.hostname_clean).removeAttr("disabled");
-			$('#btn_skip_' + parent.hostname_clean).removeAttr("disabled");
+			$('#btn_refresh_' + self.hostname_clean).removeAttr("disabled");
+			$('#btn_notify_' + self.hostname_clean).removeAttr("disabled");
+			$('#btn_skip_' + self.hostname_clean).removeAttr("disabled");
 
 			// set connection state icon in the interface
-			parent.setStateIcon();
+			self.setStateIcon();
 
 			// reset connection attempts back to 1
-	    	parent.connectionAttempts = 1;
+	    	self.connectionAttempts = 1;
 		}
 
 		// =============================================
 		// WebSocket onerror event
 		// =============================================
 		this.wsConnection.onerror = function (event) {
-			//console.log('[' + parent.hostname + '] Listener triggered: onerror');
+			//console.log('[' + self.hostname + '] Listener triggered: onerror');
 
 			// set connection state icon in the interface
-			parent.setStateIcon();
+			self.setStateIcon();
 		}
 
 		// =============================================
 		// WebSocket onmessage event
 		// =============================================
 		this.wsConnection.onmessage = function (event) {
-			//console.log('[' + parent.hostname + '] Listener triggered: onmessage');
+			//console.log('[' + self.hostname + '] Listener triggered: onmessage');
 
 			var j = JSON.parse(event.data);
 
@@ -119,13 +119,13 @@ PiController.prototype = {
 								case 'video':
 
 									// get video properties
-									parent.sendMessage("Player.GetItem", { 
+									self.sendMessage("Player.GetItem", { 
 										"playerid": j.result[0].playerid,
 										"properties": ["file", "streamdetails"]
 									});
 
 									// get player properties
-									parent.sendMessage("Player.GetProperties", {
+									self.sendMessage("Player.GetProperties", {
 										"playerid": j.result[0].playerid,
 										"properties": ["time", "percentage", "playlistid"]
 									});
@@ -133,31 +133,31 @@ PiController.prototype = {
 
 								// audio playing
 								case 'audio':
-									$('#name_' + parent.hostname_clean).html("Audio content playing.");
+									$('#name_' + self.hostname_clean).html("Audio content playing.");
 									break;
 
 								// pictures playing
 								case 'picture':
 
 									// get picture properties
-									parent.sendMessage("Player.GetItem", { 
+									self.sendMessage("Player.GetItem", { 
 										"playerid": j.result[0].playerid,
 										"properties": ["file"]
 									});
 
 									// get playlist
-									//parent.sendMessage("Playlist.GetItems");
+									//self.sendMessage("Playlist.GetItems");
 									
 									break;
 
 								// unknown content playing
 								default:
 									contenttype = 'unknown';
-									$('#name_' + parent.hostname_clean).html("Unknown media type playing.");
+									$('#name_' + self.hostname_clean).html("Unknown media type playing.");
 							}
 						}else{
 							// No active players
-							$('#name_' + parent.hostname_clean).html("Player stopped.");
+							$('#name_' + self.hostname_clean).html("Player stopped.");
 						}
 
 						break;
@@ -170,7 +170,7 @@ PiController.prototype = {
 						//console.log(r);
 
 						// update the UI with item label
-						$('#name_' + parent.hostname_clean).html('Now Playing: ' + r.label);
+						$('#name_' + self.hostname_clean).html('Now Playing: ' + r.label);
 
 						// update the UI with the playing item details based on content type
 						switch(r.type) {
@@ -178,7 +178,7 @@ PiController.prototype = {
 							// video playing
 							case 'video':
 								// video resolution
-								$('#details_' + parent.hostname_clean).html(
+								$('#details_' + self.hostname_clean).html(
 									'Resolution: ' + r.streamdetails.video[0].width + 'x' + r.streamdetails.video[0].height + "\n\r" +
 			                		'<br />Duration: ' + r.streamdetails.video[0].duration + 's');
 								break;
@@ -191,7 +191,7 @@ PiController.prototype = {
 							// picture playing
 							case 'picture':
 								// show thumbnail of image
-								parent.updateThumbnail(r.file, 0);
+								self.updateThumbnail(r.file, 0);
 								break;
 
 							// tv playing
@@ -205,10 +205,10 @@ PiController.prototype = {
 						}
 						
 						// set the filename value
-						$('#path_' + parent.hostname_clean).val(r.file);
+						$('#path_' + self.hostname_clean).val(r.file);
 
 						// set the initial thumbnail
-						//parent.updateThumbnail(r.file, 5);
+						//self.updateThumbnail(r.file, 5);
 
 						break;
 					
@@ -219,7 +219,7 @@ PiController.prototype = {
 						var player_offset = j.result.time.hours + ':' + j.result.time.minutes + ':' + j.result.time.seconds;
 
 						// update video thumbnail to current position
-						if (j.result.type == 'video') parent.updateThumbnail($('#path_' + parent.hostname_clean).val(), player_offset);
+						if (j.result.type == 'video') self.updateThumbnail($('#path_' + self.hostname_clean).val(), player_offset);
 						
 						break;
 
@@ -238,13 +238,13 @@ PiController.prototype = {
 				switch(j.method) {
 					// player playing
 			    	case "Player.OnPlay":
-			        	parent.sendMessage("Player.GetActivePlayers");
+			        	self.sendMessage("Player.GetActivePlayers");
 			        	break;
 			    	
 			    	// player stopped
 			    	case "Player.OnStop":
-			        	$('#name_' + parent.hostname_clean).html("Player stopped.");
-						$('#details_' + parent.hostname_clean).html("");
+			        	$('#name_' + self.hostname_clean).html("Player stopped.");
+						$('#details_' + self.hostname_clean).html("");
 			        	break;
 					
 					// system reboot
@@ -402,6 +402,8 @@ PiController.prototype = {
 			"item":["directory":"/storage/slides/brisbane/pictures"],
 			"properties": ["shuffled":true, "repeat":"all", "playlistid"]);
 		*/
+		self = this;
+
 		// prompt for confirmation
 		bootbox.dialog({
 			title: 'Reboot Pi?', 
@@ -415,7 +417,7 @@ PiController.prototype = {
 			      label: 'Yes, reboot!',
 			      className: 'btn-danger',
 			      callback: function() {
-			        this.sendMessage("System.Reboot");
+			        self.sendMessage("System.Reboot");
 			      }
 				}
 			}
@@ -436,10 +438,26 @@ PiController.prototype = {
 	// send a notification
 	// =========================================================
 	notify:function() {
-		alert(this.hostname);
-		this.sendMessage("GUI.ShowNotification", {
-			"title": "title!",
-			"message": "message test!"
+		
+		self = this;
+		
+		// prompt user for a notice
+		bootbox.prompt({
+			title: 'Notify Pi', 
+			message: 'Enter the notice to display on screen:', 
+			buttons: {
+			    confirm: {
+			      label: 'Display Notice!',
+			      className: 'btn-danger'
+				}
+			},
+		    callback: function(result) {
+				// send the notice to the Pi
+				self.sendMessage("GUI.ShowNotification", {
+					"title": "PiControl Notice",
+					"message": result
+				});
+	      	}
 		});
 	}
 }
