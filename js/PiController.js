@@ -201,7 +201,7 @@ PiController.prototype = {
 
 							// unknown item
 							default:
-								console.log(r);
+								//console.log(r);
 						}
 						
 						// set the filename value
@@ -229,7 +229,7 @@ PiController.prototype = {
 
 					// unknown response message
 					default:
-						console.log(j);
+						//console.log(j);
 				}
 
 			} else {
@@ -252,9 +252,10 @@ PiController.prototype = {
 						//showError('Pi Rebooting...', 'warning');
 						break;
 
+					// other actions, volume change, channel change etc.
 			    	default:
 			    		//showError('Unknown action performed on HOSTNAME-HERE', 'info');
-			       		console.log(j);
+			       		//console.log(j);
 			    }
 			}
 		}
@@ -407,7 +408,7 @@ PiController.prototype = {
 		// prompt for confirmation
 		bootbox.dialog({
 			title: 'Reboot Pi?', 
-			message: 'This will reboot ' + this.hostname + ' and refresh the content. Do you wish to continue?', 
+			message: 'This will <b>reboot</b> ' + this.hostname + ' and refresh the content. Do you wish to continue?', 
 			buttons: {
 			    success: {
 			      label: 'No!',
@@ -455,7 +456,8 @@ PiController.prototype = {
 				// send the notice to the Pi
 				self.sendMessage("GUI.ShowNotification", {
 					"title": "PiControl Notice",
-					"message": result
+					"message": result,
+					"image":'https://www.raspberrypi.org/forums/download/file.php?avatar=29948_1344375500.png'
 				});
 	      	}
 		});
