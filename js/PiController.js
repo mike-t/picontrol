@@ -177,6 +177,7 @@ PiController.prototype = {
 							
 							// video playing
 							case 'video':
+								// video resolution
 								$('#details_' + parent.hostname_clean).html(
 									'Resolution: ' + r.streamdetails.video[0].width + 'x' + r.streamdetails.video[0].height + "\n\r" +
 			                		'<br />Duration: ' + r.streamdetails.video[0].duration + 's');
@@ -189,9 +190,18 @@ PiController.prototype = {
 
 							// picture playing
 							case 'picture':
-								// no details at this time
+								// show thumbnail of image
 								parent.updateThumbnail(r.file, 0);
 								break;
+
+							// tv playing
+							case 'channel':
+								// no details at this time
+								break;
+
+							// unknown item
+							default:
+								console.log(r);
 						}
 						
 						// set the filename value
@@ -208,8 +218,8 @@ PiController.prototype = {
 						// generate the time for current offset (hh:mm:ss)
 						var player_offset = j.result.time.hours + ':' + j.result.time.minutes + ':' + j.result.time.seconds;
 
-						// update the video thumbnail to current position
-						parent.updateThumbnail($('#path_' + parent.hostname_clean).val(), player_offset);
+						// update video thumbnail to current position
+						if (j.result.type == 'video') parent.updateThumbnail($('#path_' + parent.hostname_clean).val(), player_offset);
 						
 						break;
 
@@ -281,17 +291,21 @@ PiController.prototype = {
 	// add the controller to
 	// ===================================================
 	showInterface:function(element) {
-		var dashboard = document.getElementById(element);
+		//var dashboard = document.getElementById(element);
+
+		// CANNOT USE INNERHTML IT DESTROYS ALL ELEMENTS AND EVENT LISTENERS THEN RECREATES ELEMENTS ONLY!!!! use appendchild or something else
+
+		// add the container div using append child, the rest can be innerhtml! ;)
 
 		// add the html for the controller interface
-        dashboard.innerHTML += '<div class="col-sm-6 col-md-4 pi-control" id="controller_' + this.hostname_clean + '">\n'
+        $('#' + element).append('<div class="col-sm-6 col-md-4 pi-control" id="controller_' + this.hostname_clean + '">\n'
 							+  '  <div class="thumbnail">\n'
 							+  '    <img id="thumb_' + this.hostname_clean + '" src="img/pi_screen.png" alt="' + this.hostname + '">\n'
 							+  '    <div class="caption">\n'
 							+  '      <h4>' + this.hostname + ' <small id="status_' + this.hostname_clean + '"><span class="glyphicon glyphicon-refresh text-warning" aria-hidden="true"></span></small></h4>\n'
 							+  '      <h3 style="margin-top: 0px">' + this.location + '</h3>\n'
 							+  '      <!-- now playing -->\n'
-							+  '      <h4 style="padding-top: 15px;" id="name_' + this.hostname_clean + '"></h4>\n'     
+							+  '      <h4 style="padding-top: 15px;" id="name_' + this.hostname_clean + '">&nbsp;</h4>\n'     
 							+  '      <p id="details_' + this.hostname_clean + '">\n'
 							+  '      </p>\n\n'
 							+  '      <!-- playing video path -->\n'
@@ -304,12 +318,12 @@ PiController.prototype = {
 							+  '      </p>\n'
 							+  '    </div>\n'
 							+  '  </div>\n'
-							+  '</div>\n\n';
+							+  '</div>\n\n');
 
 		// add event listeners for interface buttons
-		document.getElementById('btn_refresh_' + this.hostname_clean).addEventListener("click", function() { this.refresh() }, false);
-		document.getElementById('btn_notify_' + this.hostname_clean).addEventListener("click", function() { this.notify() }, false);
-		document.getElementById('btn_skip_' + this.hostname_clean).addEventListener("click", function() { this.skip() }, false);
+		document.getElementById('btn_refresh_' + this.hostname_clean).addEventListener('click', this.refresh.bind(this), false);
+		document.getElementById('btn_notify_' + this.hostname_clean).addEventListener('click', this.notify.bind(this), false);
+		document.getElementById('btn_skip_' + this.hostname_clean).addEventListener('click', this.skip.bind(this), false);
 	},
 
 	// ===================================================
@@ -422,6 +436,7 @@ PiController.prototype = {
 	// send a notification
 	// =========================================================
 	notify:function() {
+		alert(this.hostname);
 		this.sendMessage("GUI.ShowNotification", {
 			"title": "title!",
 			"message": "message test!"

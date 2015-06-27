@@ -42,12 +42,14 @@ function showError(msg, level) {
 $(function() {
 	// Usage PiController(address/hostname, html element id to add controller to)
 	// !! Get these from AJAX request
+	pi0 = new PiController('192.168.1.10', 'Mike\'s Home', 'controller-dashboard');
 	pi1 = new PiController('10.60.34.223', 'Brisbane Level 8 IT', 'controller-dashboard');
-	pi2 = new PiController('10.60.129.147', 'Melbourne Level G Bookstore', 'controller-dashboard');
-	pi3 = new PiController('10.0.6.53', 'Brisbane Level G Bookstore', 'controller-dashboard');
+	//pi2 = new PiController('10.60.129.147', 'Melbourne Level G Bookstore', 'controller-dashboard');
+	//pi3 = new PiController('10.0.6.53', 'Brisbane Level G Bookstore', 'controller-dashboard');
 	
 	// open the connections
+	pi0.connect();
 	pi1.connect();
-	pi2.connect();
-	pi3.connect();
+	//pi2.connect();
+	//pi3.connect();
 });
