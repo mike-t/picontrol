@@ -18,22 +18,34 @@
 if (!isset($_GET['path']) || !isset($_GET['offset'])) die('No valid path or offset provided.');
 if ($_GET['path'] == '' || $_GET['offset'] == '') die('No valid path or offset provided.');
 
-// CLEAN THESE! INJECTION!
+// esacpe the user input
 $path = escapeshellarg($_GET['path']);
 $offset = escapeshellarg($_GET['offset']);
 
 // ===================================================
 // SET DEFAULTS
 // ===================================================
-//$path = '/home/mike/www/picontrol/tools/video-samples/Star-Wars-VII-Trailer.mp4';
 //$offset = '00:00:50';
 $size = '640x360';
 
-// tmp - need to figure this one out...
+// replace the Pi's locally cached path dir with real dir
 $path = str_replace('localslides', 'slides', $path);
 
-// check video path exists else 404 or 501?
-// return the placeholder thumb if file is missing
+// check media path exists,log error and return the placeholder thumb if not
+/*if (!file_exists($path)) {
+	// log the error
+	error_log('Media path does not exist or is not readable: '.$path.'.');
+	// set path to the placeholder image
+	$path = __DIR__ . '/../img/pi_screen.png';
+}*/
+
+// check ffmpeg exists
+if (empty(shell_exec("which ffmpeg"))) {
+	// log the error
+	error_log('ffmpeg binary not available, check if it is installed.');
+	// set path to the placeholder image
+	$path = __DIR__ . '../img/pi_screen.png';
+}
 
 // ===================================================
 // Set HTTP header and return image (JPEG)
