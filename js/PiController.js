@@ -122,6 +122,7 @@ PiController.prototype = {
 									self.sendMessage("Player.GetItem", { 
 										"playerid": j.result[0].playerid,
 										"properties": ["file", "streamdetails","title"]
+										//"properties": ["file", "streamdetails","title", "thumbnail", "plot"]
 									});
 
 									// get player properties
@@ -148,16 +149,6 @@ PiController.prototype = {
 									// get playlist
 									//self.sendMessage("Playlist.GetItems");
 									
-									break;
-
-								// tv playing
-								case 'channel':
-
-									// get picture properties
-									self.sendMessage("Player.GetItem", { 
-										"playerid": j.result[0].playerid,
-										"properties": ["title", "showtitle", "channel"]
-									});								
 									break;
 
 								// unknown content playing
@@ -208,6 +199,8 @@ PiController.prototype = {
 							case 'channel':
 								// display the program / show
 								$('#name_' + self.hostname_clean).append(' - ' + r.title);
+								// thumbnail - maybe use chnnel number + stream URL to get thumbnail
+								//$('#details_' + self.hostname_clean).html(decodeURIComponent(r.thumbnail));
 								break;
 
 							// unknown item
