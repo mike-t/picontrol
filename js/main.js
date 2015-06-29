@@ -34,7 +34,27 @@ function showError(msg, level) {
 	}
 }
 
+// =========================================================
+// Event Listener - filter form button click
+// =========================================================
+function applyFilter() {
+	switch ($('#filter-campus').val()) {
+		case 'all':
+			$('#controller-dashboard-bne').fadeIn();
+			$('#controller-dashboard-mlb').fadeIn();
+			break;
 
+		case 'bne':
+			$('#controller-dashboard-bne').fadeIn();
+			$('#controller-dashboard-mlb').fadeOut();
+			break;
+
+		case 'mlb':
+			$('#controller-dashboard-bne').fadeOut();
+			$('#controller-dashboard-mlb').fadeIn();
+			break;
+	}
+}
 
 // =========================================================
 // Document Ready
@@ -43,9 +63,9 @@ $(function() {
 	// Usage PiController(address/hostname, html element id to add controller to)
 	// !! Get these from AJAX request
 	//pi0 = new PiController('192.168.1.10', 'Mike\'s Home', 'controller-dashboard');
-	pi1 = new PiController('10.60.34.223', 'Brisbane Level 8 IT', 'controller-dashboard');
-	pi2 = new PiController('10.60.129.147', 'Melbourne Level G Bookstore', 'controller-dashboard');
-	pi3 = new PiController('10.0.6.53', 'Brisbane Level G Bookstore', 'controller-dashboard');
+	pi1 = new PiController('10.60.34.223', 'Brisbane Level 8 IT', 'controller-dashboard-bne');
+	pi2 = new PiController('10.60.129.147', 'Melbourne Level G Bookstore', 'controller-dashboard-mlb');
+	pi3 = new PiController('10.0.6.53', 'Brisbane Level G Bookstore', 'controller-dashboard-bne');
 	
 	// open the connections
 	//pi0.connect();

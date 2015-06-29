@@ -34,23 +34,24 @@
         <p>Dashboard for managing Raspberry Pi OpenElec based TV controllers.</p>
 
         <!-- control form -->
-        <form class="form-inline" role="form" name="pi-form" id="pi-form" action="javascript:alert('apply filter here!');">
+        <form class="form-inline" role="form" name="pi-form" id="pi-form" onsubmit="applyFilter(); return false;">
           <p>
             <!-- campus filter -->
             <div class="form-group">
               <label class="sr-only" for="filter-campus">Campus</label>
-              <select class="form-control" name="filter-campus" id="filter-campus">
+              <select class="form-control" name="filter-campus" id="filter-campus" onchange="applyFilter();">
+                <option value="all" selected>Show All</option>
                 <option value="bne">Brisbane</option>
-                <option value="gc">Gold Coast</option>
-                <option value="syd">Sydney</option>
+                <option value="gc" disabled>Gold Coast</option>
+                <option value="syd" disabled>Sydney</option>
                 <option value="mlb">Melbourne</option>
-                <option value="adl">Adelaide</option>
-                <option value="pth">Perth</option>
+                <option value="adl" disabled>Adelaide</option>
+                <option value="pth" disabled>Perth</option>
               </select>
             </div>
           </p>
           <!-- go button! -->
-            <button type="submit" class="btn btn-primary btn-lg btn-danger" name="form_button" id="form_button" disabled >Filter &raquo;</button>
+          <!--<button type="submit" class="btn btn-primary btn-lg btn-danger" name="form_button" id="form_button" >Filter &raquo;</button>-->
         </form>
       </div>
     </div>
@@ -64,6 +65,14 @@
     
       <!-- the Pi Controller dashboard -->
       <div class="row" id="controller-dashboard" >
+        <div class="row" id="controller-dashboard-bne">
+          <h2>Brisbane</h2>
+          <hr />
+        </div>
+        <div class="row" id="controller-dashboard-mlb">
+          <h2>Melbourne</h2>
+          <hr />
+        </div>
       </div>
 
       <footer style="margin-top: 40px;">
