@@ -412,7 +412,7 @@ PiController.prototype = {
 		// prompt for confirmation
 		bootbox.dialog({
 			title: 'Reboot Pi?', 
-			message: 'This will <b>reboot</b> ' + this.hostname + ' and refresh the content. Do you wish to continue?', 
+			message: '<p>This will <b>reboot</b> ' + this.location + ' (' + this.hostname + ') and refresh the content.</p><p>Do you wish to continue?</p>', 
 			buttons: {
 			    success: {
 			      label: 'No!',
@@ -448,7 +448,7 @@ PiController.prototype = {
 		
 		// prompt user for a notice
 		bootbox.prompt({
-			title: 'Notify Pi', 
+			title: 'Notify Pi - ' + this.location, 
 			message: 'Enter the notice to display on screen:', 
 			buttons: {
 			    confirm: {
