@@ -461,7 +461,7 @@ PiController.prototype = {
 				self.sendMessage("GUI.ShowNotification", {
 					"title": "PiControl Notice",
 					"message": result,
-					"image":'https://www.raspberrypi.org/forums/download/file.php?avatar=29948_1344375500.png'
+					"image":'http://picontrol.acnm.local/img/pi_120.png'
 				});
 	      	}
 		});
