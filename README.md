@@ -5,17 +5,17 @@ It is designed for use with TV's operating as electronic signage, digital billbo
 
 We use Raspberry Pi 2 based devices as a cheap and effective controller, but you can use any OpenElec/Kodi supported hardware.
 
-Features:
-1. Dashboard displaying a screenshot and details of what is playing on each controller.
-2. Connection handling and auto-reconnect of multiple WebSocket connections.
-3. Refresh button - reboots the controller.
-4. Notify button - displays on-screen notification on controller's TV.
-5. Skip button - plays next item in playlist / skips the current playing item.
-6. Content recognition - recognises several media types including video, pictures, music and TV and returns details of what is playing.
+##Features:
+* Dashboard displaying a screenshot and details of what is playing on each controller.
+* Connection handling and auto-reconnect of multiple WebSocket connections.
+* Refresh button - reboots the controller.
+* Notify button - displays on-screen notification on controller's TV.
+* Skip button - plays next item in playlist / skips the current playing item.
+* Content recognition - recognises several media types including video, pictures, music and TV and returns details of what is playing.
 
-Requirements:
-1. WebSockets enabled on OpenElec/Kodi controller
+##Requirements:
+1. WebSockets enabled on [OpenElec](http://openelec.tv/) or [Kodi](http://kodi.tv/) controller
 2. ffmpeg on web server for thumbnails/screenshots
 3. PHP 5.5+
-4. Suitable web server, we recommend nginx (http://nginx.org/en/)
-5. Browser with WebSocket support (http://caniuse.com/#feat=websockets)
+4. Suitable web server, we recommend [nginx](http://nginx.org/en/)
+5. Browser with [WebSocket support](http://caniuse.com/#feat=websockets)
