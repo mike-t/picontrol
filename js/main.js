@@ -60,16 +60,24 @@ function applyFilter() {
 // Document Ready
 // =========================================================
 $(function() {
-	// Usage PiController(address/hostname, html element id to add controller to)
-	// !! Get these from AJAX request
-	//pi0 = new PiController('192.168.1.10', 'Mike\'s Home', 'controller-dashboard');
-	pi1 = new PiController('10.60.34.223', 'Brisbane Level 8 IT', 'controller-dashboard-bne');
-	pi2 = new PiController('10.60.129.147', 'Melbourne Level G Bookstore', 'controller-dashboard-mlb');
-	pi3 = new PiController('10.0.6.53', 'Brisbane Level G Bookstore', 'controller-dashboard-bne');
-	
-	// open the connections
-	//pi0.connect();
-	pi1.connect();
-	pi2.connect();
-	pi3.connect();
+    // Usage PiController(address/hostname, html element id to add controller to)
+    // !! Get these from AJAX request
+    //pi0 = new PiController('192.168.1.10', 'Mike\'s Home', 'controller-dashboard');
+    pi1 = new PiController('10.60.34.223', 'Brisbane Level 8 IT', 'controller-dashboard-bne');
+    pi2 = new PiController('10.60.129.147', 'Melbourne Level G Bookstore', 'controller-dashboard-mlb');
+    pi3 = new PiController('10.0.6.53', 'Brisbane Level G Bookstore', 'controller-dashboard-bne');
+    pi4 = new PiController('10.60.128.227', 'Melbourne Level 1 Clinic', 'controller-dashboard-mlb');
+	pi5 = new PiController('10.10.6.29', 'Perth Ground Floor Library', 'controller-dashboard-pth');
+	//pi6 = new PiController('x.x.x.x', 'x', 'controller-dashboard-adl');
+	//pi7 = new PiController('x.x.x.x', 'x', 'controller-dashboard-syd');
+
+    // open the connections
+    //pi0.connect();
+    pi1.connect();
+    pi2.connect();
+    pi3.connect();
+    pi4.connect();
+	pi5.connect();
+	pi6.connect();
+	pi7.connect();
 });
