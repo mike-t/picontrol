@@ -61,7 +61,6 @@ function applyFilter() {
 // =========================================================
 $(function() {
     // Usage PiController(address/hostname, html element id to add controller to)
-    // !! Get these from AJAX request
     //pi0 = new PiController('192.168.1.10', 'Mike\'s Home', 'controller-dashboard');
     pi1 = new PiController('10.60.34.223', 'Brisbane Level 8 IT', 'controller-dashboard-bne');
     pi2 = new PiController('10.60.129.147', 'Melbourne Level G Bookstore', 'controller-dashboard-mlb');
@@ -78,6 +77,6 @@ $(function() {
     pi3.connect();
     pi4.connect();
 	pi5.connect();
-	pi6.connect();
-	pi7.connect();
+	//pi6.connect();
+	//pi7.connect();
 });

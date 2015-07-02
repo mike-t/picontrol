@@ -395,7 +395,7 @@ PiController.prototype = {
 	// update the thumbnail for a controlled Pi
 	// =========================================================
 	updateThumbnail:function(path, offset) {
-		$('#thumb_' + this.hostname_clean).attr('src','tools/get_thumb.php?path='+path+'&offset='+offset);
+		$('#thumb_' + this.hostname_clean).attr('src','resources/get_thumb.php?path='+path+'&offset='+offset);
 	},
 
 	// =========================================================
